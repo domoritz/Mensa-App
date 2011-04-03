@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference android:enabled="true" android:defaultValue="http://myhpi.de/~kai.fabian/mensa.py?multiple" android:key="URL_OF_RSS" android:summary="@string/summary_url_preferences" android:title="@string/title_url_preferences"></EditTextPreference>
+</PreferenceScreen>

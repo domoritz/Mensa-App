@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    
+    <!--<item android:id="@+id/today" android:title="@string/today"></item>-->
+    <item android:title="@string/refresh" android:id="@+id/refresh" android:icon="@drawable/ic_menu_refresh"></item>
+    <item android:id="@+id/chdate" android:title="@string/pick_date" android:icon="@android:drawable/ic_menu_today"></item>
+    <item android:id="@+id/preferences" android:icon="@android:drawable/ic_menu_preferences" android:title="@string/preferences"></item><item android:id="@+id/quit" android:title="@string/quit" android:icon="@android:drawable/ic_menu_close_clear_cancel"></item>
+    
+    
+    
+</menu>

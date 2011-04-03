@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mensa Potsdam</string>
+    <string name="pick_date">Wähle Datum</string>
+    <string name="quit">Beenden</string>
+    <string name="last">previous</string>
+    <string name="next">next</string>
+    <string name="refresh">Neu laden</string>
+    <string name="dialogOK">OK</string>
+    <string name="error">es ist ein Fehler aufgetaucht!</string>
+    <string name="no_menu">Es wurde kein Menü gefunden. Versuche in anderes Datum.</string>
+    <string name="preferences">Einstellungen</string>
+    <string name="settings_title">Einstellungen für Mensa Potsdam</string>
+    <string name="today">heute</string>
+    <string name="yesterday">gestern</string>
+    <string name="tomorrow">morgen</string>
+    <string name="app_description">Eine tolle Android App, die den Mensplan der Unipotsdam aus einem RSS Feed holt. Einfach, schnell, schön. </string>
+    <string name="fetched_successfully">Menü wurde erfolgreich von %s geladen.</string>
+    <string name="title_url_preferences">URL des Mensa Feed</string>
+	<string name="summary_url_preferences">URL des Mensa Feed. Dies sollte ein RSS Feed sein, der mit XML formatiert ist.</string>
+</resources>

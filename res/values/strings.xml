@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mensa Potsdam</string>
+    <string name="pick_date">Choose date</string>
+    <string name="quit">Quit</string>
+    <string name="last">previous</string>
+    <string name="next">next</string>
+    <string name="refresh">Reload</string>
+    <string name="dialogOK">Okay</string>
+    <string name="error">An error occured! </string>
+    <string name="no_menu">No menu found. Try another date. </string>
+    <string name="preferences">Settings</string>
+    <string name="settings_title">Settings for Mensa Potsdam</string>
+    <string name="today">today</string>
+    <string name="yesterday">yesterday</string>
+    <string name="tomorrow">tomorrow</string>
+    <string name="app_description">Nice Android appllication which fetches a RSS feed and shows the menu for a given date. Simple, easy, beautiful. </string>
+    <string name="fetched_successfully">Successfully fetched menu from %s</string>
+	<string name="title_url_preferences">Url of mensa feed</string>
+	<string name="summary_url_preferences">Url of mensa feed. This should be a RSS Feed, formatted with XML. </string>
+</resources>
