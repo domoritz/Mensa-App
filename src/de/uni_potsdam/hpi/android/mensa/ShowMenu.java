@@ -108,6 +108,13 @@ public class ShowMenu extends Activity {
 		mContentView.addView(zc, ZOOM_PARAMS);
 		mWebView.getSettings().setBuiltInZoomControls(false);
 		mWebView.getSettings().setSupportZoom(true);
+		
+		mWebView.setOnLongClickListener(new View.OnLongClickListener() {
+			public boolean onLongClick(View v) {
+				updateMenu();
+				return true;
+			}
+		});
 
 		zc.getTouchables().get(0)
 				.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +158,7 @@ public class ShowMenu extends Activity {
 						mMonth = c.get(Calendar.MONTH);
 						mDay = c.get(Calendar.DAY_OF_MONTH);
 
-						updateMenu();
+						showMenu();
 						return true;
 					}
 				});
@@ -278,8 +285,8 @@ public class ShowMenu extends Activity {
 
 		protected void onPostExecute(Boolean result) {
 			// showDebug("ende "+result);
-			// shows menu in web view
 			if (result) {
+				// shows menu in web view
 				showMenu();
 				
 				//show toast
@@ -450,7 +457,6 @@ public class ShowMenu extends Activity {
 			mMonth = monthOfYear;
 			mDay = dayOfMonth;
 			updateMenu();
-
 		}
 	};
 
@@ -462,7 +468,7 @@ public class ShowMenu extends Activity {
 					mDay);
 		case WARNING_DIALOG: {
 			return new AlertDialog.Builder(this)
-					.setMessage(R.string.error + error)
+					.setMessage(Html.fromHtml("<b>" + getResources().getString(R.string.error) + "</b>") + "\n" + error)
 					.setCancelable(false)
 					.setNeutralButton(R.string.dialogOK,
 							new DialogInterface.OnClickListener() {
