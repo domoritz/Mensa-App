@@ -18,5 +18,3 @@ You can either download this app or help me improving it.
 ## FAQ
 
 
-
-#### License: [MIT-Style](totalfinder-i18n/raw/master/license.txt)
