@@ -9,15 +9,29 @@ public class Preferences extends PreferenceActivity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
+        addPreferencesFromResource(R.xml.preferences);   
     }
 	
-	private static final String URL = "URL_OF_RSS";
-	private static final String URL_DEFAULT = "http://myhpi.de/~kai.fabian/mensa.py?multiple";
+	@Override
+	protected void onResume() {
+		 super.onResume();
+		 //Toast.makeText(this, "onResume", Toast.LENGTH_LONG).show();
+	}
+	
+	private static final String URL_OF_RSS = "URL_OF_RSS";
+	private static final String URL_OF_RSS_DEFAULT = "http://myhpi.de/~dominik.moritz/mensa.py?multiple";
 	
 	public static String getUrl(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context).
-			getString(URL, URL_DEFAULT);
+			getString(URL_OF_RSS, URL_OF_RSS_DEFAULT);
+	}
+	
+	private static final String MENSA = "MENSA";
+	private static final String MENSA_DEFAULT = "griebnitzsee";
+	
+	public static String getMensa(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context).
+			getString(MENSA, MENSA_DEFAULT);
 	}
 
 }

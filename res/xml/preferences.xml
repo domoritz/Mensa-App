@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference android:enabled="true" android:defaultValue="http://myhpi.de/~kai.fabian/mensa.py?multiple" android:key="URL_OF_RSS" android:summary="@string/summary_url_preferences" android:title="@string/title_url_preferences"></EditTextPreference>
+    <PreferenceCategory android:title="@string/source_settings">
+    <ListPreference android:summary="@string/summary_choosemensa" android:title="@string/choosemensa" android:entries="@array/mensas_options" android:entryValues="@array/mensas_values" android:defaultValue="griebnitzsee" android:key="MENSA"></ListPreference>
+    <EditTextPreference android:enabled="true" android:key="URL_OF_RSS" android:summary="@string/summary_url_preferences" android:title="@string/title_url_preferences" android:defaultValue="http://myhpi.de/~dominik.moritz/mensa.py?multiple" android:dialogMessage="@string/diag_title_url_preferences"></EditTextPreference>
+    </PreferenceCategory>
+    
+    
+    <PreferenceCategory android:title="@string/about"><PreferenceScreen android:summary="@string/app_version_name" android:title="Version"></PreferenceScreen>
+    <PreferenceScreen android:summary="Dominik Moritz" android:title="@string/author"></PreferenceScreen>
+</PreferenceCategory>
+    
 </PreferenceScreen>

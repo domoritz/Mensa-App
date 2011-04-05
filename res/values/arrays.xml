@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="mensas_options">
+    	<item>Am neuen Palais</item>
+        <item>Griebnitzsee</item> 
+        <item>Golm</item>
+        <item>Pappelallee</item>
+        <item>Friedrich-Ebert-Straße</item>
+        <item>Brandenburg</item>
+        <item>Wildau</item>
+    </string-array>
+    <string-array name="mensas_values">
+    	<item>am-neuen-palais</item>
+        <item>grienitzsee</item>
+        <item>golm</item>
+        <item>pappelallee</item>
+        <item>friedrich-ebert-strasse</item>
+        <item>brandenburg</item>
+        <item>wildau</item>
+    </string-array>
+</resources>

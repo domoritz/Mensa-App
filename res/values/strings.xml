@@ -9,13 +9,20 @@
     <string name="dialogOK">Okay</string>
     <string name="error">An error occured! </string>
     <string name="no_menu">No menu found. Try another date. </string>
-    <string name="preferences">Settings</string>
+    <string name="preferences">Preferences</string>
     <string name="settings_title">Settings for Mensa Potsdam</string>
     <string name="today">today</string>
     <string name="yesterday">yesterday</string>
     <string name="tomorrow">tomorrow</string>
     <string name="app_description">Nice Android appllication which fetches a RSS feed and shows the menu for a given date. Simple, easy, beautiful. </string>
     <string name="fetched_successfully">Successfully fetched menu from %s</string>
-	<string name="title_url_preferences">Url of mensa feed</string>
-	<string name="summary_url_preferences">Url of mensa feed. This should be a RSS Feed, formatted with XML. </string>
+	<string name="title_url_preferences">URL of mensa feed</string>
+	<string name="summary_url_preferences">URL of mensa feed. This should be a RSS Feed, formatted with XML. </string>
+	<string name="choosemensa">Choose your Mensa</string>
+	<string name="summary_choosemensa">Choose the Mensa from the University of Potsdam, where you shall dine.</string>
+	<string name="diag_title_url_preferences">Type ypur preferred URL</string>
+	<string name="app_version_name">1.2.1</string>
+	<string name="about">About</string>
+	<string name="author">Author</string>
+	<string name="source_settings">Source Preferences</string>
 </resources>

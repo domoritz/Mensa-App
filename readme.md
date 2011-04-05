@@ -6,7 +6,7 @@ This is a simple app which downloads the menu/ meal plan for the University of P
 
 ## What to do?
 
-You can either download this app or help me improving it.
+You can either download this app or help me improve it.
 
 ## If you want to help developing
 

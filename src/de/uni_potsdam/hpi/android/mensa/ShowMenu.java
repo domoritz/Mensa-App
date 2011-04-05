@@ -233,9 +233,9 @@ public class ShowMenu extends Activity {
 	 */
 	private void updateMenu() {
 
-		// options: perDay, multiple, multipleComplete; http://myhpi.de/~kai.fabian/mensa.py?multiple
+		// options: perDay, multiple, multipleComplete; http://myhpi.de/~dominik.moritz/mensa.py?multiple
 		DownloadMenuTask fetcher = new DownloadMenuTask();
-		fetcher.execute(Preferences.getUrl(this.getApplicationContext()));
+		fetcher.execute(Preferences.getUrl(this.getApplicationContext()) +"&"+ Preferences.getMensa(this.getApplicationContext()));
 	}
 
 	/**
@@ -402,7 +402,7 @@ public class ShowMenu extends Activity {
 				+ "	<description><![CDATA[#1: Spaghetti \"Carbonara\" mit Reibekäse #2: Schweinenackenbraten mit Rotkohl und Klößen #3: Hähnchenbrust nach Siam Art mit Wokgemüse, dazu Bratnudeln oder Bio-Reis #4: Gnocchi Pomodore auf Ratatouillegemüse, dazu Salat mit Bio-Joghurtdressing 			]]></description>"
 				+ "	<pubDate>Tue, 22 Feb 2011 10:00:00 GMT</pubDate>"
 				+ "	<link>http://www.studentenwerk-potsdam.de/speiseplan.html</link>"
-				+ "	<author>MensaRSS generator, kai.fabian+mensarss+noreply@myhpi.de</author>"
+				+ "	<author>MensaRSS generator, dominik.moritz+mensarss+noreply@myhpi.de</author>"
 				+ "	<guid>{97d6c2a0cb1ec0ac2046011b14b71014a6c2e8cf}</guid>"
 				+ "</item>" + "</channel>" + "</rss>";
 
