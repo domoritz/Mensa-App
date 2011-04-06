@@ -68,6 +68,8 @@ public class ShowMenu extends Activity {
 
 	// date already initalized?
 	private boolean initalized = false;
+	private String mensa = "";
+	private String url = "";
 
 	private WebView mWebView;
 
@@ -178,6 +180,22 @@ public class ShowMenu extends Activity {
 		
 		Context context = this.getApplicationContext();
 		String locale = context.getResources().getConfiguration().locale.getDisplayName();
+		
+		//set mensa and make it available to compare it later with mensa from settings
+		this.mensa = Preferences.getMensa(getApplicationContext());
+		//set url
+		this.url = Preferences.getUrl(getApplicationContext());
+	}
+	
+	/** Called when the activity gets focus. */
+	@Override
+	public void onResume() {
+		super.onResume();
+		//updates if options were changed
+		if (initalized && (this.mensa != Preferences.getMensa(getApplicationContext()) || this.url != Preferences.getUrl(getApplicationContext())) ) {
+			updateMenu();
+			this.mensa = Preferences.getMensa(getApplicationContext());
+		}
 	}
 
 	/**
@@ -464,8 +482,7 @@ public class ShowMenu extends Activity {
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DATE_DIALOG_ID:
-			return new DatePickerDialog(this, mDateSetListener, mYear, mMonth,
-					mDay);
+			return new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay);
 		case WARNING_DIALOG: {
 			return new AlertDialog.Builder(this)
 					.setMessage(Html.fromHtml("<b>" + getResources().getString(R.string.error) + "</b>") + "\n" + error)

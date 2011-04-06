@@ -18,4 +18,10 @@
     <string name="fetched_successfully">Menü wurde erfolgreich von %s geladen.</string>
     <string name="title_url_preferences">URL des Mensa Feed</string>
 	<string name="summary_url_preferences">URL des Mensa Feed. Dies sollte ein RSS Feed sein, der mit XML formatiert ist.</string>
+	<string name="choosemensa">Wähle deine Mensa</string>
+	<string name="summary_choosemensa">Wähle deine Mensa des Studentenwerks Potsdam, wo du Essen fassen willst.</string>
+	<string name="diag_title_url_preferences">Setzte die URL ein</string>
+	<string name="about">Über</string>
+	<string name="author">Autor</string>
+	<string name="source_settings">Quell-Einstellungen</string>
 </resources>
