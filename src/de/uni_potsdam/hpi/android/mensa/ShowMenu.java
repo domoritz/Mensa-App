@@ -253,7 +253,7 @@ public class ShowMenu extends Activity {
 
 		// options: perDay, multiple, multipleComplete; http://myhpi.de/~dominik.moritz/mensa.py?multiple
 		DownloadMenuTask fetcher = new DownloadMenuTask();
-		fetcher.execute(Preferences.getUrl(this.getApplicationContext()) +"&"+ Preferences.getMensa(this.getApplicationContext()));
+		fetcher.execute(Preferences.getUrl(this.getApplicationContext()) +"&mensa="+ Preferences.getMensa(this.getApplicationContext()));
 	}
 
 	/**

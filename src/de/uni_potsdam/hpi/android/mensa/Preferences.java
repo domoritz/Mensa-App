@@ -19,7 +19,7 @@ public class Preferences extends PreferenceActivity {
 	}
 	
 	private static final String URL_OF_RSS = "URL_OF_RSS";
-	private static final String URL_OF_RSS_DEFAULT = "http://myhpi.de/~dominik.moritz/mensa.py?multiple";
+	private static final String URL_OF_RSS_DEFAULT = "http://myhpi.de/~dominik.moritz/mensa.py?display=multiple";
 	
 	public static String getUrl(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context).
