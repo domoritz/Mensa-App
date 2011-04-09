@@ -24,4 +24,6 @@
 	<string name="about">Über</string>
 	<string name="author">Autor</string>
 	<string name="source_settings">Quell-Einstellungen</string>
+	<string name="fetching_desc">Lade das Menü herunter. Bitte warten.</string>
+	<string name="fetching">Hole Menü</string>
 </resources>

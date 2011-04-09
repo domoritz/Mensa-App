@@ -4,9 +4,10 @@
     
     
     <!--<item android:id="@+id/today" android:title="@string/today"></item>-->
-    <item android:title="@string/refresh" android:id="@+id/refresh" android:icon="@drawable/ic_menu_refresh"></item>
-    <item android:id="@+id/preferences" android:icon="@android:drawable/ic_menu_preferences" android:title="@string/preferences"></item><item android:id="@+id/quit" android:title="@string/quit" android:icon="@android:drawable/ic_menu_close_clear_cancel"></item>
-    <item android:title="@string/today" android:id="@+id/today" android:icon="@android:drawable/ic_menu_today"></item>
+    <item android:icon="@android:drawable/ic_menu_revert" android:id="@+id/today" android:title="@string/today"></item><item android:title="@string/refresh" android:id="@+id/refresh" android:icon="@drawable/ic_menu_refresh"></item>
+    <item android:id="@+id/preferences" android:icon="@android:drawable/ic_menu_preferences" android:title="@string/preferences"></item>
+    
+    <item android:id="@+id/pick" android:title="@string/pick_date" android:icon="@android:drawable/ic_menu_today"></item><item android:icon="@android:drawable/ic_menu_close_clear_cancel" android:title="@string/quit" android:id="@+id/quit"></item>
     
     
     
