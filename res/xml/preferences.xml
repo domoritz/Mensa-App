@@ -8,7 +8,8 @@
     
     
     <PreferenceCategory android:title="@string/about"><PreferenceScreen android:summary="@string/app_version_name" android:title="Version"></PreferenceScreen>
-    <PreferenceScreen android:summary="Dominik Moritz" android:title="@string/author"></PreferenceScreen>
+    <PreferenceScreen android:title="@string/author" android:selectable="true" android:summary="Dominik Moritz" android:key="author"></PreferenceScreen>
+    <PreferenceScreen android:title="Feedback" android:key="feedback" android:summary="@string/feedback_desc"></PreferenceScreen>
 </PreferenceCategory>
     
 </PreferenceScreen>

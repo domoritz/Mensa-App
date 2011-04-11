@@ -10,7 +10,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -35,14 +34,18 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebView;
@@ -50,13 +53,22 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.util.Log;
+import android.widget.ZoomControls;
 
+/**
+ * Main class
+ * 
+ * mensa = canteen
+ * 
+ * @author dominik
+ * 
+ */
 public class Main extends Activity {
-	
+
 	private final String TAG = "PotsdamMensaApp";
-	
+
 	private int mYear;
 	private int mMonth;
 	private int mDay;
@@ -72,33 +84,40 @@ public class Main extends Activity {
 
 	private WebView mWebView;
 
+	/* Dialogs */
 	private static final int DATE_DIALOG_ID = 0;
 	private static final int WARNING_DIALOG = 1;
 	private static final int PROGRESS_DIALOG = 2;
 	
+	ProgressDialog loadingDialog = null;
+
 	DownloadMenuTask fetcher;
 
-	/** Called when the activity is first created. */
+	/**
+	 * Called when the activity is first created.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.v(TAG,"onCreate: E");
-		
+		Log.v(TAG, "onCreate: E");
+
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		// requestWindowFeature(Window.FEATURE_PROGRESS);
 
 		setContentView(R.layout.main);
-		
-		//set mensa and make it available to compare it later with mensa from settings
+
+		// set mensa and make it available to compare it later with mensa from
+		// settings
 		this.mensa = Preferences.getMensa(getApplicationContext());
-		//set url
-		this.url = String.format(Preferences.getUrl(getApplicationContext()), mensa);
-		
-		Log.d(TAG,"Url: " + url);
-		Log.d(TAG,"Mensa: " + mensa);
-		
-		//this is neccessary to see weather we just changed the orientation
+		// set url
+		this.url = String.format(Preferences.getUrl(getApplicationContext()),
+				mensa);
+
+		Log.d(TAG, "Url: " + url);
+		Log.d(TAG, "Mensa: " + mensa);
+
+		// this is neccessary to see weather we just changed the orientation
 		Wrapper lastNonConfigurationInstance = (Wrapper) getLastNonConfigurationInstance();
 
 		if (lastNonConfigurationInstance == null) {
@@ -108,51 +127,31 @@ public class Main extends Activity {
 			mYear = c.get(Calendar.YEAR);
 			mMonth = c.get(Calendar.MONTH);
 			mDay = c.get(Calendar.DAY_OF_MONTH);
-		} 
-		
+		}
+
 		if (lastNonConfigurationInstance != null) {
 			items = lastNonConfigurationInstance.getItems();
-			mYear =  lastNonConfigurationInstance.getmYear();
-			mDay =  lastNonConfigurationInstance.getmDay();
-			mMonth =  lastNonConfigurationInstance.getmMonth();
+			mYear = lastNonConfigurationInstance.getmYear();
+			mDay = lastNonConfigurationInstance.getmDay();
+			mMonth = lastNonConfigurationInstance.getmMonth();
 		}
 
 		// ###### Web View
 		mWebView = (WebView) findViewById(R.id.webview);
+
+		mWebView.getSettings().setSupportZoom(true);
+		mWebView.getSettings().setBuiltInZoomControls(true);
+
 		mWebView.setWebViewClient(new HelloWebViewClient());
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.setBackgroundColor(0);
 
-		final View zc = mWebView.getZoomControls();
-		FrameLayout mContentView = (FrameLayout) getWindow().getDecorView()
-				.findViewById(android.R.id.content);
-		final FrameLayout.LayoutParams ZOOM_PARAMS = new FrameLayout.LayoutParams(
-				ViewGroup.LayoutParams.FILL_PARENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM);
-		mContentView.addView(zc, ZOOM_PARAMS);
-		mWebView.getSettings().setBuiltInZoomControls(false);
-		mWebView.getSettings().setSupportZoom(true);
-		
 		mWebView.setOnLongClickListener(new View.OnLongClickListener() {
 			public boolean onLongClick(View v) {
 				updateMenu();
 				return true;
 			}
 		});
-
-		zc.getTouchables().get(0)
-				.setOnClickListener(new View.OnClickListener() {
-					public void onClick(View v) {
-						mWebView.zoomOut();
-					}
-				});
-
-		zc.getTouchables().get(1)
-				.setOnClickListener(new View.OnClickListener() {
-					public void onClick(View v) {
-						mWebView.zoomIn();
-					}
-				});
 
 		// ###### Buttons
 		ImageButton next = (ImageButton) findViewById(R.id.next);
@@ -192,24 +191,29 @@ public class Main extends Activity {
 				showDialog(DATE_DIALOG_ID);
 			}
 		});
-		
+
 		// ressBarVisibility(true);
-		setProgressBarIndeterminate(true);
-		setProgressBarIndeterminateVisibility(false);
+		//setProgressBarIndeterminate(true);
+		//setProgressBarIndeterminateVisibility(false);
 
 		// display the menu
-	    if (lastNonConfigurationInstance == null) {
-	        updateMenu();
-	    } else {
-	    	showMenu();
-	    }
-		
+		if (lastNonConfigurationInstance == null) {
+			updateMenu();
+		} else {
+			showMenu();
+		}
+
 		Context context = this.getApplicationContext();
-		String locale = context.getResources().getConfiguration().locale.getDisplayName();
-		
+		String locale = context.getResources().getConfiguration().locale
+				.getDisplayName();
+		Log.d(TAG, "Locale: " + locale);
+
 		Log.v(TAG, "onCreate: X");
 	}
-	
+
+	/**
+	 * prepares data to pass it to iteself
+	 */
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 		Wrapper wrapper = new Wrapper();
@@ -217,21 +221,24 @@ public class Main extends Activity {
 		wrapper.setmMonth(mMonth);
 		wrapper.setmYear(mYear);
 		wrapper.setItems(items);
-		
-	    return wrapper;
+
+		return wrapper;
 	}
-	
-	/** 
-	 * Called when the activity gets focus. 
+
+	/**
+	 * Called when the activity gets focus.
 	 **/
 	@Override
 	public void onRestart() {
 		super.onRestart();
-		//updates if options were changed
-		if (this.mensa != Preferences.getMensa(getApplicationContext()) || url.compareTo(String.format(Preferences.getUrl(getApplicationContext()),mensa)) != 0) {
+		// updates if options were changed
+		if (this.mensa != Preferences.getMensa(getApplicationContext())
+				|| url.compareTo(String.format(
+						Preferences.getUrl(getApplicationContext()), mensa)) != 0) {
 			this.mensa = Preferences.getMensa(getApplicationContext());
-			this.url = String.format(Preferences.getUrl(getApplicationContext()), mensa);
-			
+			this.url = String.format(
+					Preferences.getUrl(getApplicationContext()), mensa);
+
 			updateMenu();
 		}
 	}
@@ -280,7 +287,7 @@ public class Main extends Activity {
 			return true;
 		case R.id.preferences:
 			startActivity(new Intent(this, Preferences.class));
-            return true;
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -294,8 +301,9 @@ public class Main extends Activity {
 	 */
 	private void updateMenu() {
 		Log.v(TAG, "updateMenu");
-		
-		// options: perDay, multiple, multipleComplete; http://myhpi.de/~dominik.moritz/mensa.py?multiple
+
+		// options: perDay, multiple, multipleComplete;
+		// http://myhpi.de/~dominik.moritz/mensa.py?multiple
 		fetcher = new DownloadMenuTask();
 		fetcher.execute(url);
 	}
@@ -305,7 +313,7 @@ public class Main extends Activity {
 	 */
 	private class DownloadMenuTask extends AsyncTask<String, Integer, Boolean> {
 		private String currenturl = "";
-		
+
 		protected Boolean doInBackground(String... urls) {
 			currenturl = urls[0];
 			String response = "";
@@ -313,8 +321,9 @@ public class Main extends Activity {
 			try {
 				// options: perDay, multiple, multipleComplete
 				response = doGet(currenturl);
+				
+				Log.v(TAG, "Response: " + response);
 
-				// showDebug("response: " + response.substring(0, 200));
 				parse(response);
 
 			} catch (ClientProtocolException e) {
@@ -336,40 +345,39 @@ public class Main extends Activity {
 				e.printStackTrace();
 				return false;
 			}
-			
+
 			return true;
 		}
 
 		protected void onPreExecute() {
-			// showDebug("start");
 			showDialog(PROGRESS_DIALOG);
 			setProgressBarIndeterminateVisibility(true);
 		}
 
 		protected void onPostExecute(Boolean result) {
-			// showDebug("ende "+result);
+			setProgressBarIndeterminateVisibility(false);
+			dismissDialog(PROGRESS_DIALOG);
+			
 			if (result) {
 				// shows menu in web view
 				showMenu();
-				
-				//show toast
+
+				// show toast
 				Context context = getApplicationContext();
 				int duration = Toast.LENGTH_LONG;
 				Resources res = getResources();
-				Toast toast = Toast.makeText(context, String.format(res.getString(R.string.fetched_successfully), currenturl), duration);
+				Toast toast = Toast.makeText(context, String.format(
+						res.getString(R.string.fetched_successfully),
+						currenturl), duration);
 				toast.show();
-				
 			} else {
 				showError();
 			}
-			dismissDialog(PROGRESS_DIALOG);
-			setProgressBarIndeterminateVisibility(false);
 		}
-		
+
 		@Override
 		protected void onCancelled() {
 			super.onCancelled();
-			
 			setProgressBarIndeterminateVisibility(false);
 		}
 	}
@@ -385,6 +393,18 @@ public class Main extends Activity {
 
 		boolean empty = true;
 
+		/*
+		 * <dl> <dt>Name: </dt> <dd>John Don</dd>
+		 * 
+		 * <dt>Age: </dt> <dd>23</dd>
+		 * 
+		 * <dt>Gender: </dt> <dd>Male</dd>
+		 * 
+		 * <dt>Day of Birth:</dt> <dd>12th May 1986</dd> </dl>
+		 */
+
+		String name = "";
+
 		for (Item item : items) {
 			tmpdate = item.getDate();
 
@@ -397,23 +417,40 @@ public class Main extends Activity {
 
 			if (isRight) {
 				// richtiges datum gefunden
-				sb.append("<li>" + item.getDescription() + "</li>");
+				name = item.getTitle();
+				name = name.substring(name.length() - 1);
+
+				if (name.equalsIgnoreCase("4")) {
+					name = getResources().getString(R.string.alternative);
+				} else {
+					name = String.format(getResources()
+							.getString(R.string.menu), name);
+				}
+
+				sb.append("<dt>" + name + "</dt><dd>" + item.getDescription()
+						+ "</dd>");
 				empty = false;
 			}
 		}
 
 		if (empty) {
-			sb.append("<html><body>"+getResources().getString(R.string.no_menu)+"</body></html>");
+			sb.append("<html><body>"
+					+ getResources().getString(R.string.no_menu)
+					+ "</body></html>");
 		}
 
-		String html = "<html><body style=\"color: lightgrey\"><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
-				+ "<ol>" + sb.toString() + "</ol>" + "</body></html>";
+		String html = "<html>"
+				+ "<head><style>dt { font-weight: bold } dd {margin-bottom: 10px;}</style></head>"
+				+ "<body style=\"color: lightgrey\"><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
+				+ "<dl>" + sb.toString() + "</dl>" + "</body>" + "</html>";
 		mWebView.loadData(html, "text/html", "UTF-8");
 
 		Date date = new Date(mYear - 1900, mMonth, mDay);
 		SimpleDateFormat formatter1 = new SimpleDateFormat(
-				"EEEE, dd MMMM yyyy", getApplicationContext().getResources().getConfiguration().locale);
-		SimpleDateFormat formatter2 = new SimpleDateFormat("EEE, dd MMM",
+				"EEEE, dd MMMM yyyy", getApplicationContext().getResources()
+						.getConfiguration().locale);
+		SimpleDateFormat formatter2 = new SimpleDateFormat(
+				"EEE, dd MMM",
 				getApplicationContext().getResources().getConfiguration().locale);
 
 		CharSequence timestring = "";
@@ -424,13 +461,17 @@ public class Main extends Activity {
 		Date tomorrow = calendar.getTime();
 		calendar.add(calendar.DATE, -2);
 		Date yesterday = calendar.getTime();
-		
-		if (now.getDate() == date.getDate() && now.getMonth() == date.getMonth() && now.getYear() == date.getYear()) {
+
+		if (now.getDate() == date.getDate()
+				&& now.getMonth() == date.getMonth()
+				&& now.getYear() == date.getYear()) {
 			timestring = getResources().getText(R.string.today);
-		} else if (tomorrow.getDate() == date.getDate() && tomorrow.getMonth() == date.getMonth()
+		} else if (tomorrow.getDate() == date.getDate()
+				&& tomorrow.getMonth() == date.getMonth()
 				&& tomorrow.getYear() == date.getYear()) {
 			timestring = getResources().getText(R.string.tomorrow);
-		} else if (yesterday.getDate() == date.getDate() && yesterday.getMonth() == date.getMonth()
+		} else if (yesterday.getDate() == date.getDate()
+				&& yesterday.getMonth() == date.getMonth()
 				&& yesterday.getYear() == date.getYear()) {
 			timestring = getResources().getText(R.string.yesterday);
 		} else {
@@ -449,14 +490,23 @@ public class Main extends Activity {
 		dateChooserButton.setText(timestring);
 
 		// show toast
-		/*Context context = getApplicationContext();
-		int duration = Toast.LENGTH_SHORT;
-
-		Toast toast = Toast.makeText(context, "Menu for " + timestring,
-				duration);
-		toast.show();*/
+		/*
+		 * Context context = getApplicationContext(); int duration =
+		 * Toast.LENGTH_SHORT;
+		 * 
+		 * Toast toast = Toast.makeText(context, "Menu for " + timestring,
+		 * duration); toast.show();
+		 */
 	}
 
+	/**
+	 * xml -> list
+	 * 
+	 * @param response
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
 	private void parse(String response) throws ParserConfigurationException,
 			SAXException, IOException {
 
@@ -489,8 +539,18 @@ public class Main extends Activity {
 		xr.parse(is);
 
 		items = handler.getItems();
+
+		Log.d(TAG, "items" + items);
 	}
 
+	/**
+	 * gets website content
+	 * 
+	 * @param url
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public static String doGet(String url) throws ClientProtocolException,
 			IOException {
 		HttpGet getRequest = new HttpGet(url);
@@ -500,6 +560,14 @@ public class Main extends Activity {
 		return responseToString(response);
 	}
 
+	/**
+	 * turns httpresponse into a string representation
+	 * 
+	 * @param httpResponse
+	 * @return
+	 * @throws IllegalStateException
+	 * @throws IOException
+	 */
 	private static String responseToString(HttpResponse httpResponse)
 			throws IllegalStateException, IOException {
 		StringBuilder response = new StringBuilder();
@@ -531,14 +599,22 @@ public class Main extends Activity {
 		}
 	};
 
+	/**
+	 * precesses showDialog(x)
+	 */
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DATE_DIALOG_ID:
-			return new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay);
+			return new DatePickerDialog(this, mDateSetListener, mYear, mMonth,
+					mDay);
 		case WARNING_DIALOG: {
 			return new AlertDialog.Builder(this)
-					.setMessage(Html.fromHtml("<b>" + getResources().getString(R.string.error) + "</b>") + "\n" + error)
+					.setMessage(
+							Html.fromHtml("<b>"
+									+ getResources().getString(R.string.error)
+									+ "</b>")
+									+ "\n" + error)
 					.setCancelable(false)
 					.setNeutralButton(R.string.dialogOK,
 							new DialogInterface.OnClickListener() {
@@ -551,9 +627,12 @@ public class Main extends Activity {
 							}).create();
 		}
 		case PROGRESS_DIALOG: {
-			ProgressDialog loadingDialog = new ProgressDialog(this);
-			//loadingDialog.setTitle(getResources().getString(R.string.fetching));
-			loadingDialog.setMessage(String.format(getResources().getString(R.string.fetching_desc), url));
+			if (loadingDialog == null) {
+				loadingDialog = new ProgressDialog(this);
+			}
+			// loadingDialog.setTitle(getResources().getString(R.string.fetching));
+			loadingDialog.setMessage(String.format(
+					getResources().getString(R.string.fetching_desc), url));
 			loadingDialog.setIndeterminate(true);
 			loadingDialog.setCancelable(true);
 			loadingDialog.setOnCancelListener(new OnCancelListener() {
@@ -561,31 +640,31 @@ public class Main extends Activity {
 					fetcher.cancel(true);
 				}
 			});
-            return loadingDialog;
-        }
+			return loadingDialog;
+		}
 
 		}
 		return null;
 	}
 
+
+	public void callIntent(View view) {
+		Toast.makeText(view.getContext(), "test", Toast.LENGTH_LONG).show();
+		Intent intent = new Intent(Intent.ACTION_VIEW,
+				Uri.parse("http://www.vogella.de"));
+		startActivity(intent);
+	}
+
 	private void setError(String string) {
 		error = string;
 	}
-	
+
 	private void showError() {
 		showDialog(WARNING_DIALOG);
 	}
-	
+
 	private void showError(String string) {
 		error = string;
 		showDialog(WARNING_DIALOG);
-	}
-
-	private void showDebug(String string) {
-		Context context = getApplicationContext();
-		int duration = Toast.LENGTH_LONG;
-
-		Toast toast = Toast.makeText(context, "Debug:\n" + string, duration);
-		toast.show();
 	}
 }

@@ -26,4 +26,7 @@
 	<string name="source_settings">Quell-Einstellungen</string>
 	<string name="fetching_desc">Lade das Menü herunter. Bitte warten.</string>
 	<string name="fetching">Hole Menü</string>
+	<string name="alternative">Alternativ:</string>
+	<string name="menu">Menü %s:</string>
+	<string name="feedback_desc">Schreibe mir eine kurze Email und danke mir, frage etwas oder beschwere Dich.</string>
 </resources>
