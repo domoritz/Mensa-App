@@ -8,7 +8,7 @@
     <string name="refresh">Neu laden</string>
     <string name="dialogOK">OK</string>
     <string name="error">es ist ein Fehler aufgetaucht!</string>
-    <string name="no_menu">Es wurde kein Menü gefunden. Versuche in anderes Datum.</string>
+    <string name="no_menu">Es wurde kein Menü gefunden. Versuche ein anderes Datum.</string>
     <string name="preferences">Einstellungen</string>
     <string name="settings_title">Einstellungen für Mensa Potsdam</string>
     <string name="today">heute</string>
@@ -24,8 +24,8 @@
 	<string name="about">Über</string>
 	<string name="author">Autor</string>
 	<string name="source_settings">Quell-Einstellungen</string>
-	<string name="fetching_desc">Lade das Menü herunter. Bitte warten.</string>
-	<string name="fetching">Hole Menü</string>
+	<string name="fetching_desc">Bitte warten...</string>
+	<string name="fetching">Lade Menü herunter</string>
 	<string name="alternative">Alternativ:</string>
 	<string name="menu">Menü %s:</string>
 	<string name="feedback_desc">Schreibe mir eine kurze Email und danke mir, frage etwas oder beschwere Dich.</string>

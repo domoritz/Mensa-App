@@ -31,6 +31,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -188,6 +189,8 @@ public class Main extends Activity {
 
 		dateChooserButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				showDebug("Mensa: " + Preferences.getMensaString(getApplicationContext()));
+				
 				showDialog(DATE_DIALOG_ID);
 			}
 		});
@@ -637,7 +640,7 @@ public class Main extends Activity {
 			if (loadingDialog == null) {
 				loadingDialog = new ProgressDialog(this);
 			}
-			// loadingDialog.setTitle(getResources().getString(R.string.fetching));
+			loadingDialog.setTitle(getResources().getString(R.string.fetching));
 			loadingDialog.setMessage(String.format(
 					getResources().getString(R.string.fetching_desc), url));
 			loadingDialog.setIndeterminate(true);

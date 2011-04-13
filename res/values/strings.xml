@@ -25,8 +25,8 @@
 	<string name="about">About</string>
 	<string name="author">Author</string>
 	<string name="source_settings">Source Preferences</string>
-	<string name="fetching_desc">Loading menu. Please wait.</string>
-	<string name="fetching">Getting Menu</string>
+	<string name="fetching_desc">Please wait...</string>
+	<string name="fetching">Fetching Menu</string>
 	<string name="alternative">Alternative:</string>
 	<string name="menu">Menu %s:</string>
 	<string name="feedback_desc">Write me a short email and ask a question, thank me or complain. </string>

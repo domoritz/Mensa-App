@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Item {
-	static SimpleDateFormat FORMATTER = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+	static SimpleDateFormat FORMATTER = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z",Locale.ENGLISH);
 	private String title;
 	private URL link;
 	private String description;

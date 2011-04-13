@@ -2,8 +2,10 @@ package de.uni_potsdam.hpi.android.mensa;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -12,6 +14,9 @@ import android.view.View;
 import android.widget.Toast;
 
 public class Preferences extends PreferenceActivity {
+	private ListPreference menuPreference;
+	private static String mensaStringValue;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,6 +48,10 @@ public class Preferences extends PreferenceActivity {
 				return false;
 			}
 		});
+		
+		Preference mensa = (Preference) findPreference("MENSA");
+		mensaStringValue = mensa.getSharedPreferences().getString(MENSA, "blub");
+
 	}
 
 	@Override
@@ -67,6 +76,10 @@ public class Preferences extends PreferenceActivity {
 				.getString(MENSA, MENSA_DEFAULT);
 	}
 	
+	public static String getMensaString(Context context) {
+		return mensaStringValue;
+	}
+	
 	private static final String DEBUG = "DEBUG";
 	private static final Boolean DEBUG_DEFAULT = false;
 
@@ -74,4 +87,12 @@ public class Preferences extends PreferenceActivity {
 		return PreferenceManager.getDefaultSharedPreferences(context)
 				.getBoolean(DEBUG, DEBUG_DEFAULT);
 	}
+	
+	public void oonSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        // Let's do something a preference value changes
+        if (key.equals(MENSA)) {
+        	mensaStringValue = sharedPreferences.getString(key, "blubblub"); 
+        }
+    }
+
 }
