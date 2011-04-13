@@ -313,10 +313,11 @@ public class Main extends Activity {
 	 */
 	private class DownloadMenuTask extends AsyncTask<String, Integer, Boolean> {
 		private String currenturl = "";
+		private String response;
 
 		protected Boolean doInBackground(String... urls) {
 			currenturl = urls[0];
-			String response = "";
+			response = "";
 
 			try {
 				// options: perDay, multiple, multipleComplete
@@ -361,16 +362,24 @@ public class Main extends Activity {
 			if (result) {
 				// shows menu in web view
 				showMenu();
+				
+				showDebug("\nresponse length: " + response.length());
+				showDebug("\nresponse: " + response);
+				showDebug("\nitems: " + items);
 
-				// show toast
-				Context context = getApplicationContext();
-				int duration = Toast.LENGTH_LONG;
-				Resources res = getResources();
-				Toast toast = Toast.makeText(context, String.format(
-						res.getString(R.string.fetched_successfully),
-						currenturl), duration);
-				toast.show();
+				Log.d(TAG, "Debug" + String.valueOf(Preferences.getDebug(getApplicationContext())));
+				if (Preferences.getDebug(getApplicationContext())) {
+					// show toast
+					Context context = getApplicationContext();
+					int duration = Toast.LENGTH_LONG;
+					Resources res = getResources();
+					Toast toast = Toast.makeText(context, String.format(
+							res.getString(R.string.fetched_successfully),
+							currenturl), duration);
+					toast.show();
+				}
 			} else {
+				showDebug("no response");
 				showError();
 			}
 		}
@@ -393,17 +402,11 @@ public class Main extends Activity {
 
 		boolean empty = true;
 
-		/*
-		 * <dl> <dt>Name: </dt> <dd>John Don</dd>
-		 * 
-		 * <dt>Age: </dt> <dd>23</dd>
-		 * 
-		 * <dt>Gender: </dt> <dd>Male</dd>
-		 * 
-		 * <dt>Day of Birth:</dt> <dd>12th May 1986</dd> </dl>
-		 */
-
 		String name = "";
+		
+		showDebug("\ndate: " + mDay + " " + mMonth + " " + mYear);
+		
+		showDebug("\ndate2: " + items.get(0).getDate().toGMTString());
 
 		for (Item item : items) {
 			tmpdate = item.getDate();
@@ -416,6 +419,8 @@ public class Main extends Activity {
 			isRight = isRight && (tmpdate.getYear() + 1900) == mYear;
 
 			if (isRight) {
+				showDebug("\ntmp date" + tmpdate.toString());
+				
 				// richtiges datum gefunden
 				name = item.getTitle();
 				name = name.substring(name.length() - 1);
@@ -432,6 +437,8 @@ public class Main extends Activity {
 				empty = false;
 			}
 		}
+		
+		showDebug("\nhtml: " + sb.toString());
 
 		if (empty) {
 			sb.append("<html><body>"
@@ -666,5 +673,14 @@ public class Main extends Activity {
 	private void showError(String string) {
 		error = string;
 		showDialog(WARNING_DIALOG);
+	}
+	
+	private void showDebug(String s) {
+		Log.d(TAG, "Debug" + String.valueOf(Preferences.getDebug(getApplicationContext())));
+		if (Preferences.getDebug(getApplicationContext())) {
+			// show toast
+			Context context = getApplicationContext();
+			Toast.makeText(context, "Debug: " + s, Toast.LENGTH_LONG).show();
+		}
 	}
 }

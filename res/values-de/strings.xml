@@ -29,4 +29,6 @@
 	<string name="alternative">Alternativ:</string>
 	<string name="menu">Menü %s:</string>
 	<string name="feedback_desc">Schreibe mir eine kurze Email und danke mir, frage etwas oder beschwere Dich.</string>
+	<string name="debug">Debug</string>
+	<string name="debugging_desc">Soll der Debugging-modus eingeschaltet werden?</string>
 </resources>

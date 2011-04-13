@@ -66,4 +66,12 @@ public class Preferences extends PreferenceActivity {
 		return PreferenceManager.getDefaultSharedPreferences(context)
 				.getString(MENSA, MENSA_DEFAULT);
 	}
+	
+	private static final String DEBUG = "DEBUG";
+	private static final Boolean DEBUG_DEFAULT = false;
+
+	public static Boolean getDebug(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context)
+				.getBoolean(DEBUG, DEBUG_DEFAULT);
+	}
 }
