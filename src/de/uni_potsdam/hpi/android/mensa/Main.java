@@ -420,9 +420,11 @@ public class Main extends Activity {
 			isRight = tmpdate.getMonth() == mMonth;
 			isRight = isRight && tmpdate.getDate() == mDay;
 			isRight = isRight && (tmpdate.getYear() + 1900) == mYear;
+			
+			Log.v(TAG, "Item: " + isRight +" v: " + item.getDate() + item.getTitle());
 
 			if (isRight) {
-				showDebug("\ntmp date" + tmpdate.toString());
+				showDebug("\ntmp date " + tmpdate.toString());
 				
 				// richtiges datum gefunden
 				name = item.getTitle();
@@ -679,7 +681,7 @@ public class Main extends Activity {
 	}
 	
 	private void showDebug(String s) {
-		Log.d(TAG, "Debug" + String.valueOf(Preferences.getDebug(getApplicationContext())));
+		Log.d(TAG, "Debug: " + String.valueOf(Preferences.getDebug(getApplicationContext())));
 		if (Preferences.getDebug(getApplicationContext())) {
 			// show toast
 			Context context = getApplicationContext();

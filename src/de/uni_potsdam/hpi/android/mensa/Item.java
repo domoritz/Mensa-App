@@ -6,13 +6,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import android.util.Log;
+
 public class Item {
-	static SimpleDateFormat FORMATTER = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z",Locale.ENGLISH);
+	static SimpleDateFormat FORMATTER = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z",Locale.ENGLISH);
 	private String title;
 	private URL link;
 	private String description;
 	private Date date;
 	private String datestring;
+	
+	private final String TAG = "PotsdamMensaApp";
 
 	// sort by date
 	public int compareTo(Item another) {
@@ -66,6 +70,7 @@ public class Item {
 			this.date = new Date(2000,1,1);
 			e.printStackTrace();
 		}
+		Log.d(TAG, "Datum:" + date);
 	}
 
 	public void setDatestring(String datestring) {
