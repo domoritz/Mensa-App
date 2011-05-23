@@ -84,6 +84,11 @@ public class Main extends Activity {
 	private static final int WARNING_DIALOG = 1;
 	private static final int PROGRESS_DIALOG = 2;
 
+	/* buttons */
+	ImageButton next;
+	ImageButton last;
+	Button dateChooserButton;
+
 	ProgressDialog loadingDialog = null;
 
 	DownloadMenuTask fetcher;
@@ -149,7 +154,14 @@ public class Main extends Activity {
 		});
 
 		// ###### Buttons
-		ImageButton next = (ImageButton) findViewById(R.id.next);
+		// disable buttons
+		next = (ImageButton) findViewById(R.id.next);
+		next.setEnabled(false);
+		last = (ImageButton) findViewById(R.id.last);
+		last.setEnabled(false);
+		dateChooserButton = (Button) findViewById(R.id.today);
+		dateChooserButton.setEnabled(false);
+
 		next.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mDay += 1;
@@ -157,7 +169,6 @@ public class Main extends Activity {
 			}
 		});
 
-		ImageButton last = (ImageButton) findViewById(R.id.last);
 		last.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mDay -= 1;
@@ -165,7 +176,6 @@ public class Main extends Activity {
 			}
 		});
 
-		Button dateChooserButton = (Button) findViewById(R.id.today);
 		dateChooserButton
 				.setOnLongClickListener(new View.OnLongClickListener() {
 
@@ -229,10 +239,11 @@ public class Main extends Activity {
 	@Override
 	public void onRestart() {
 		super.onRestart();
-		// updates if options were changed
+		// updates if options have been changed
 		if (this.mensa != Preferences.getMensa(getApplicationContext())
 				|| url.compareTo(String.format(
-						Preferences.getUrl(getApplicationContext()), mensa)) != 0) {
+						Preferences.getUrl(getApplicationContext()), mensa)) != 0
+				|| !dateChooserButton.isEnabled()) {
 			this.mensa = Preferences.getMensa(getApplicationContext());
 			this.url = String.format(
 					Preferences.getUrl(getApplicationContext()), mensa);
@@ -297,14 +308,13 @@ public class Main extends Activity {
 	 * @return
 	 */
 	public boolean isOnline() {
-	    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-	        return true;
-	    }
-	    return false;
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+			return true;
+		}
+		return false;
 	}
-
 
 	/**
 	 * fetches and shows the menu for a given day
@@ -377,6 +387,14 @@ public class Main extends Activity {
 			dismissDialog(PROGRESS_DIALOG);
 
 			if (result) {
+				// enable buttons
+				ImageButton next = (ImageButton) findViewById(R.id.next);
+				next.setEnabled(true);
+				ImageButton last = (ImageButton) findViewById(R.id.last);
+				last.setEnabled(true);
+				Button dateChooserButton = (Button) findViewById(R.id.today);
+				dateChooserButton.setEnabled(true);
+
 				// shows menu in web view
 				showMenu();
 
