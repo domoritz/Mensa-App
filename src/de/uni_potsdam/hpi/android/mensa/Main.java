@@ -31,32 +31,26 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.ZoomControls;
 
 /**
  * Main class
@@ -89,7 +83,7 @@ public class Main extends Activity {
 	private static final int DATE_DIALOG_ID = 0;
 	private static final int WARNING_DIALOG = 1;
 	private static final int PROGRESS_DIALOG = 2;
-	
+
 	ProgressDialog loadingDialog = null;
 
 	DownloadMenuTask fetcher;
@@ -189,15 +183,16 @@ public class Main extends Activity {
 
 		dateChooserButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				showDebug("Mensa: " + Preferences.getMensaString(getApplicationContext()));
-				
+				showDebug("Mensa: "
+						+ Preferences.getMensaString(getApplicationContext()));
+
 				showDialog(DATE_DIALOG_ID);
 			}
 		});
 
 		// ressBarVisibility(true);
-		//setProgressBarIndeterminate(true);
-		//setProgressBarIndeterminateVisibility(false);
+		// setProgressBarIndeterminate(true);
+		// setProgressBarIndeterminateVisibility(false);
 
 		// display the menu
 		if (lastNonConfigurationInstance == null) {
@@ -297,6 +292,21 @@ public class Main extends Activity {
 	}
 
 	/**
+	 * true if connected
+	 * 
+	 * @return
+	 */
+	public boolean isOnline() {
+	    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+	        return true;
+	    }
+	    return false;
+	}
+
+
+	/**
 	 * fetches and shows the menu for a given day
 	 * 
 	 * @throws IOException
@@ -305,10 +315,14 @@ public class Main extends Activity {
 	private void updateMenu() {
 		Log.v(TAG, "updateMenu");
 
-		// options: perDay, multiple, multipleComplete;
-		// http://myhpi.de/~dominik.moritz/mensa.py?multiple
-		fetcher = new DownloadMenuTask();
-		fetcher.execute(url);
+		if (isOnline()) {
+			// options: perDay, multiple, multipleComplete;
+			// http://myhpi.de/~dominik.moritz/mensa.py?multiple
+			fetcher = new DownloadMenuTask();
+			fetcher.execute(url);
+		} else {
+			showError(this.getResources().getString(R.string.noconnection));
+		}
 	}
 
 	/**
@@ -325,7 +339,7 @@ public class Main extends Activity {
 			try {
 				// options: perDay, multiple, multipleComplete
 				response = doGet(currenturl);
-				
+
 				Log.v(TAG, "Response: " + response);
 
 				parse(response);
@@ -361,16 +375,19 @@ public class Main extends Activity {
 		protected void onPostExecute(Boolean result) {
 			setProgressBarIndeterminateVisibility(false);
 			dismissDialog(PROGRESS_DIALOG);
-			
+
 			if (result) {
 				// shows menu in web view
 				showMenu();
-				
-				showDebug("\nresponse length: " + response.length());
-				showDebug("\nresponse: " + response);
-				showDebug("\nitems: " + items);
 
-				Log.d(TAG, "Debug" + String.valueOf(Preferences.getDebug(getApplicationContext())));
+				// showDebug("\nresponse length: " + response.length());
+				showDebug("\nresponse: " + response);
+				// showDebug("\nitems: " + items);
+
+				Log.d(TAG,
+						"Debug"
+								+ String.valueOf(Preferences
+										.getDebug(getApplicationContext())));
 				if (Preferences.getDebug(getApplicationContext())) {
 					// show toast
 					Context context = getApplicationContext();
@@ -406,9 +423,9 @@ public class Main extends Activity {
 		boolean empty = true;
 
 		String name = "";
-		
+
 		showDebug("\ndate: " + mDay + " " + mMonth + " " + mYear);
-		
+
 		showDebug("\ndate2: " + items.get(0).getDate().toGMTString());
 
 		for (Item item : items) {
@@ -420,12 +437,14 @@ public class Main extends Activity {
 			isRight = tmpdate.getMonth() == mMonth;
 			isRight = isRight && tmpdate.getDate() == mDay;
 			isRight = isRight && (tmpdate.getYear() + 1900) == mYear;
-			
-			Log.v(TAG, "Item: " + isRight +" v: " + item.getDate() + item.getTitle());
+
+			Log.v(TAG,
+					"Item: " + isRight + " v: " + item.getDate()
+							+ item.getTitle());
 
 			if (isRight) {
-				showDebug("\ntmp date " + tmpdate.toString());
-				
+				// showDebug("\ntmp date " + tmpdate.toString());
+
 				// richtiges datum gefunden
 				name = item.getTitle();
 				name = name.substring(name.length() - 1);
@@ -442,7 +461,7 @@ public class Main extends Activity {
 				empty = false;
 			}
 		}
-		
+
 		showDebug("\nhtml: " + sb.toString());
 
 		if (empty) {
@@ -454,6 +473,8 @@ public class Main extends Activity {
 		String html = "<html>"
 				+ "<head><style>dt { font-weight: bold } dd {margin-bottom: 10px;}</style></head>"
 				+ "<body style=\"color: lightgrey\"><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
+				// +
+				// "<p>"+String.format(getResources().getString(R.string.canteen),F)+"</p>"
 				+ "<dl>" + sb.toString() + "</dl>" + "</body>" + "</html>";
 		mWebView.loadData(html, "text/html", "UTF-8");
 
@@ -496,7 +517,8 @@ public class Main extends Activity {
 					.append(formatter2.format(date));
 		}
 
-		setTitle(new StringBuilder().append(formatter1.format(date)));
+		setTitle(Preferences.getMensaString(getApplicationContext()) + " - "
+				+ new StringBuilder().append(formatter1.format(date)));
 
 		Button dateChooserButton = (Button) findViewById(R.id.today);
 		dateChooserButton.setText(timestring);
@@ -622,11 +644,8 @@ public class Main extends Activity {
 					mDay);
 		case WARNING_DIALOG: {
 			return new AlertDialog.Builder(this)
-					.setMessage(
-							Html.fromHtml("<b>"
-									+ getResources().getString(R.string.error)
-									+ "</b>")
-									+ "\n" + error)
+					.setTitle(getResources().getString(R.string.error))
+					.setMessage(Html.fromHtml(error))
 					.setCancelable(false)
 					.setNeutralButton(R.string.dialogOK,
 							new DialogInterface.OnClickListener() {
@@ -659,7 +678,6 @@ public class Main extends Activity {
 		return null;
 	}
 
-
 	public void callIntent(View view) {
 		Toast.makeText(view.getContext(), "test", Toast.LENGTH_LONG).show();
 		Intent intent = new Intent(Intent.ACTION_VIEW,
@@ -679,9 +697,12 @@ public class Main extends Activity {
 		error = string;
 		showDialog(WARNING_DIALOG);
 	}
-	
+
 	private void showDebug(String s) {
-		Log.d(TAG, "Debug: " + String.valueOf(Preferences.getDebug(getApplicationContext())));
+		Log.d(TAG,
+				"Debug: "
+						+ String.valueOf(Preferences
+								.getDebug(getApplicationContext())));
 		if (Preferences.getDebug(getApplicationContext())) {
 			// show toast
 			Context context = getApplicationContext();

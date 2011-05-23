@@ -7,7 +7,7 @@
     <string name="next">next</string>
     <string name="refresh">Neu laden</string>
     <string name="dialogOK">OK</string>
-    <string name="error">es ist ein Fehler aufgetaucht!</string>
+    <string name="error">Es ist ein Fehler aufgetaucht!</string>
     <string name="no_menu">Es wurde kein Menü gefunden. Versuche ein anderes Datum.</string>
     <string name="preferences">Einstellungen</string>
     <string name="settings_title">Einstellungen für Mensa Potsdam</string>
@@ -31,4 +31,6 @@
 	<string name="feedback_desc">Schreibe mir eine kurze Email und danke mir, frage etwas oder beschwere Dich.</string>
 	<string name="debug">Debug</string>
 	<string name="debugging_desc">Soll der Debugging-modus eingeschaltet werden?</string>
+	<string name="canteen">Menü der Mensa %s:</string>
+	<string name="noconnection">Keine Internetverbindung. Bitte verbinden.</string>
 </resources>

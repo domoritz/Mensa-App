@@ -1,5 +1,8 @@
 package de.uni_potsdam.hpi.android.mensa;
 
+import java.util.Iterator;
+
+import android.app.backup.RestoreObserver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,12 +13,14 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 public class Preferences extends PreferenceActivity {
 	private ListPreference menuPreference;
-	private static String mensaStringValue;
+	
+	private final static String TAG = "PotsdamMensaApp";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +38,6 @@ public class Preferences extends PreferenceActivity {
 			}
 		});
 		
-		
 		Preference feedbackPref = (Preference) findPreference("feedback");
 		
 		feedbackPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -48,9 +52,6 @@ public class Preferences extends PreferenceActivity {
 				return false;
 			}
 		});
-		
-		Preference mensa = (Preference) findPreference("MENSA");
-		mensaStringValue = mensa.getSharedPreferences().getString(MENSA, "blub");
 
 	}
 
@@ -77,7 +78,24 @@ public class Preferences extends PreferenceActivity {
 	}
 	
 	public static String getMensaString(Context context) {
-		return mensaStringValue;
+		String mensa = getMensa(context);
+		
+		String[] mensas = context.getResources().getStringArray(R.array.mensas_options);
+		String[] mensas_keys = context.getResources().getStringArray(R.array.mensas_values);
+		
+		int i = 0;
+		String name = mensas[i];
+		//Log.d(TAG, "Compare with: "+mensa);
+		
+		for (String value : mensas_keys) {
+			//Log.d(TAG, "mensa: "+ name + " " + value);
+			if (mensa.equalsIgnoreCase(value)) {
+				return name;
+			}
+			i++;
+			name = mensas[i];
+		}
+		return "Empty";
 	}
 	
 	private static final String DEBUG = "DEBUG";
@@ -87,12 +105,5 @@ public class Preferences extends PreferenceActivity {
 		return PreferenceManager.getDefaultSharedPreferences(context)
 				.getBoolean(DEBUG, DEBUG_DEFAULT);
 	}
-	
-	public void oonSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        // Let's do something a preference value changes
-        if (key.equals(MENSA)) {
-        	mensaStringValue = sharedPreferences.getString(key, "blubblub"); 
-        }
-    }
 
 }
