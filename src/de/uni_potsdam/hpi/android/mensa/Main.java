@@ -117,24 +117,12 @@ public class Main extends Activity {
 		Log.d(TAG, "Url: " + url);
 		Log.d(TAG, "Mensa: " + mensa);
 
-		// this is neccessary to see weather we just changed the orientation
-		Wrapper lastNonConfigurationInstance = (Wrapper) getLastNonConfigurationInstance();
-
-		if (lastNonConfigurationInstance == null) {
-			// set date to today
-			// get the current date
-			final Calendar c = Calendar.getInstance();
-			mYear = c.get(Calendar.YEAR);
-			mMonth = c.get(Calendar.MONTH);
-			mDay = c.get(Calendar.DAY_OF_MONTH);
-		}
-
-		if (lastNonConfigurationInstance != null) {
-			items = lastNonConfigurationInstance.getItems();
-			mYear = lastNonConfigurationInstance.getmYear();
-			mDay = lastNonConfigurationInstance.getmDay();
-			mMonth = lastNonConfigurationInstance.getmMonth();
-		}
+		// set date to today
+		// get the current date
+		final Calendar c = Calendar.getInstance();
+		mYear = c.get(Calendar.YEAR);
+		mMonth = c.get(Calendar.MONTH);
+		mDay = c.get(Calendar.DAY_OF_MONTH);
 
 		// ###### Web View
 		mWebView = (WebView) findViewById(R.id.webview);
@@ -205,11 +193,7 @@ public class Main extends Activity {
 		// setProgressBarIndeterminateVisibility(false);
 
 		// display the menu
-		if (lastNonConfigurationInstance == null) {
-			updateMenu();
-		} else {
-			showMenu();
-		}
+		updateMenu();
 
 		Context context = this.getApplicationContext();
 		String locale = context.getResources().getConfiguration().locale
@@ -217,20 +201,6 @@ public class Main extends Activity {
 		Log.d(TAG, "Locale: " + locale);
 
 		Log.v(TAG, "onCreate: X");
-	}
-
-	/**
-	 * prepares data to pass it to iteself
-	 */
-	@Override
-	public Object onRetainNonConfigurationInstance() {
-		Wrapper wrapper = new Wrapper();
-		wrapper.setmDay(mDay);
-		wrapper.setmMonth(mMonth);
-		wrapper.setmYear(mYear);
-		wrapper.setItems(items);
-
-		return wrapper;
 	}
 
 	/**
@@ -277,28 +247,28 @@ public class Main extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.refresh:
-			updateMenu();
-			return true;
-		case R.id.today:
-			// get the current date
-			final Calendar c = Calendar.getInstance();
-			mYear = c.get(Calendar.YEAR);
-			mMonth = c.get(Calendar.MONTH);
-			mDay = c.get(Calendar.DAY_OF_MONTH);
-			showMenu();
-			return true;
-		case R.id.pick:
-			showDialog(DATE_DIALOG_ID);
-			return true;
-		case R.id.quit:
-			finish();
-			return true;
-		case R.id.preferences:
-			startActivity(new Intent(this, Preferences.class));
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
+			case R.id.refresh:
+				updateMenu();
+				return true;
+			case R.id.today:
+				// get the current date
+				final Calendar c = Calendar.getInstance();
+				mYear = c.get(Calendar.YEAR);
+				mMonth = c.get(Calendar.MONTH);
+				mDay = c.get(Calendar.DAY_OF_MONTH);
+				showMenu();
+				return true;
+			case R.id.pick:
+				showDialog(DATE_DIALOG_ID);
+				return true;
+			case R.id.quit:
+				finish();
+				return true;
+			case R.id.preferences:
+				startActivity(new Intent(this, Preferences.class));
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -529,9 +499,9 @@ public class Main extends Activity {
 			// out of range
 
 			timestring = new StringBuilder()
-			// Month is 0 based so add 1
-			// .append(mMonth + 1).append("-").append(mDay).append("-")
-			// .append(mYear);
+					// Month is 0 based so add 1
+					// .append(mMonth + 1).append("-").append(mDay).append("-")
+					// .append(mYear);
 					.append(formatter2.format(date));
 		}
 
@@ -657,40 +627,43 @@ public class Main extends Activity {
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
-		case DATE_DIALOG_ID:
-			return new DatePickerDialog(this, mDateSetListener, mYear, mMonth,
-					mDay);
-		case WARNING_DIALOG: {
-			return new AlertDialog.Builder(this)
-					.setTitle(getResources().getString(R.string.error))
-					.setMessage(Html.fromHtml(error))
-					.setCancelable(false)
-					.setNeutralButton(R.string.dialogOK,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									dialog.dismiss();
-									// dismissDialog(WARNING_DIALOG) should also
-									// work!
-								}
-							}).create();
-		}
-		case PROGRESS_DIALOG: {
-			if (loadingDialog == null) {
-				loadingDialog = new ProgressDialog(this);
+			case DATE_DIALOG_ID:
+				return new DatePickerDialog(this, mDateSetListener, mYear,
+						mMonth,
+						mDay);
+			case WARNING_DIALOG: {
+				return new AlertDialog.Builder(this)
+						.setTitle(getResources().getString(R.string.error))
+						.setMessage(Html.fromHtml(error))
+						.setCancelable(false)
+						.setNeutralButton(R.string.dialogOK,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.dismiss();
+										// dismissDialog(WARNING_DIALOG) should
+										// also
+										// work!
+									}
+								}).create();
 			}
-			loadingDialog.setTitle(getResources().getString(R.string.fetching));
-			loadingDialog.setMessage(String.format(
-					getResources().getString(R.string.fetching_desc), url));
-			loadingDialog.setIndeterminate(true);
-			loadingDialog.setCancelable(true);
-			loadingDialog.setOnCancelListener(new OnCancelListener() {
-				public void onCancel(DialogInterface dialog) {
-					fetcher.cancel(true);
+			case PROGRESS_DIALOG: {
+				if (loadingDialog == null) {
+					loadingDialog = new ProgressDialog(this);
 				}
-			});
-			return loadingDialog;
-		}
+				loadingDialog.setTitle(getResources().getString(
+						R.string.fetching));
+				loadingDialog.setMessage(String.format(
+						getResources().getString(R.string.fetching_desc), url));
+				loadingDialog.setIndeterminate(true);
+				loadingDialog.setCancelable(true);
+				loadingDialog.setOnCancelListener(new OnCancelListener() {
+					public void onCancel(DialogInterface dialog) {
+						fetcher.cancel(true);
+					}
+				});
+				return loadingDialog;
+			}
 
 		}
 		return null;
